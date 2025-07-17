@@ -1,0 +1,204 @@
+
+# Presentation Control System - Feature Implementation Prompts
+
+## 1. Electron Desktop Application Setup
+```
+Create the main Electron application structure with:
+- Main process setup with window management
+- Renderer process communication via IPC
+- Auto-updater integration
+- Native menu system
+- System tray integration
+- Multi-window management for dual displays
+```
+
+## 2. Zoom Video SDK Integration
+```
+Implement full Zoom Video SDK integration with:
+- SDK initialization and authentication
+- Meeting join/leave functionality
+- Video/audio stream management
+- Participant management
+- Screen sharing capabilities
+- Recording functionality
+- Network quality monitoring
+```
+
+## 3. OBS Virtual Camera Integration
+```
+Add OBS virtual camera support with:
+- Virtual camera detection and selection
+- Stream capture from OBS output
+- Camera switching functionality
+- Video quality adjustment
+- Audio routing from OBS
+- Fallback to system cameras
+```
+
+## 4. BodyPix Background Removal
+```
+Implement real background segmentation with:
+- TensorFlow.js BodyPix model loading
+- Real-time person segmentation
+- Configurable background replacement
+- Green screen detection and removal
+- Performance optimization for real-time processing
+- GPU acceleration support
+```
+
+## 5. Azure Service Bus Communication
+```
+Set up Azure Service Bus for device communication:
+- Service Bus namespace configuration
+- Queue/topic setup for different message types
+- Authentication and connection management
+- Message serialization/deserialization
+- Error handling and retry logic
+- Connection monitoring and reconnection
+```
+
+## 6. WebSocket Real-time Communication
+```
+Implement WebSocket server and client with:
+- Node.js WebSocket server setup
+- Client connection management
+- Message routing between devices
+- Authentication and authorization
+- Heartbeat and connection monitoring
+- Message queuing for offline devices
+```
+
+## 7. Dual Display Management
+```
+Create dual display controller with:
+- Display detection and enumeration
+- Window positioning for each display
+- Fullscreen management
+- Display mirroring options
+- Resolution and scaling handling
+- Hot-plugging support
+```
+
+## 8. Media Player with Remote Control
+```
+Build advanced media player with:
+- Local file system integration
+- Video/image format support
+- Playlist management
+- Seek controls and timeline
+- Volume and playback speed control
+- Subtitle support
+- Media caching and preloading
+```
+
+## 9. Real-time Thumbnail Generation
+```
+Implement thumbnail streaming with:
+- Canvas-based frame capture
+- Image compression and optimization
+- Configurable update intervals
+- Bandwidth optimization
+- Error handling for network issues
+- Thumbnail caching strategy
+```
+
+## 10. Presenter Interface Enhancement
+```
+Enhance presenter UI with:
+- Multi-camera preview and switching
+- Audio level monitoring
+- Participant grid view
+- Chat integration
+- Presentation notes display
+- Timer and countdown functionality
+```
+
+## 11. Audience Interface Optimization
+```
+Optimize audience display with:
+- Hardware acceleration for video
+- Low-latency streaming
+- Automatic quality adjustment
+- Failover mechanisms
+- Local caching for better performance
+- Keyboard shortcuts for quick controls
+```
+
+## 12. Tablet Control Interface
+```
+Create mobile-optimized control interface:
+- Touch-friendly controls
+- Swipe gestures for media navigation
+- Pinch-to-zoom for thumbnail preview
+- Offline capability with sync
+- Battery optimization
+- Portrait/landscape responsive design
+```
+
+## 13. Configuration Management
+```
+Add comprehensive settings system:
+- Device-specific configurations
+- User preferences storage
+- Network settings management
+- Video/audio quality presets
+- Backup and restore functionality
+- Environment-specific configs (dev/prod)
+```
+
+## 14. Monitoring and Analytics
+```
+Implement system monitoring with:
+- Performance metrics collection
+- Error tracking and reporting
+- Usage analytics
+- Network quality monitoring
+- System resource usage tracking
+- Health check endpoints
+```
+
+## 15. Security Implementation
+```
+Add security features:
+- End-to-end encryption for communications
+- Device authentication and authorization
+- Secure credential storage
+- Session management
+- Rate limiting and DDoS protection
+- Audit logging
+```
+
+## 16. Testing and Quality Assurance
+```
+Create comprehensive testing suite:
+- Unit tests for all components
+- Integration tests for device communication
+- End-to-end testing scenarios
+- Performance testing and benchmarks
+- Cross-platform compatibility testing
+- Automated testing pipeline
+```
+
+## 17. Deployment and Distribution
+```
+Set up deployment pipeline:
+- Electron app packaging for all platforms
+- Code signing for Windows/macOS
+- Auto-update server setup
+- Docker containerization for services
+- CI/CD pipeline configuration
+- Distribution strategy (direct download/app stores)
+```
+
+## 18. Documentation and User Guides
+```
+Create comprehensive documentation:
+- API documentation for all services
+- User manual with setup instructions
+- Troubleshooting guide
+- Network requirements and firewall rules
+- Hardware compatibility list
+- Video tutorials for setup and usage
+```
+
+Each prompt is designed to be implemented incrementally, building upon the web prototype foundation provided. Use the existing React components as the starting point for the Electron renderer processes.
