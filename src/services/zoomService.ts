@@ -36,16 +36,28 @@ export class ZoomService {
         sdkSecret: '***hidden***' 
       });
 
-      // In real Electron app, this would be:
-      // const ZoomVideo = (await import('@zoomus/videosdk')).default;
+      // Try to import the real Zoom Video SDK, fallback to mock for development
+      let ZoomVideo;
+      try {
+        // Use eval to avoid TypeScript compilation errors
+        const importPath = '@zoomus/videosdk';
+        const zoomModule = await eval(`import('${importPath}')`).catch(() => null);
+        if (zoomModule && zoomModule.default) {
+          ZoomVideo = zoomModule.default;
+          console.log('Using real Zoom Video SDK');
+        } else {
+          console.warn('Zoom SDK not found, using mock implementation for development');
+          ZoomVideo = this.getMockZoomSDK();
+        }
+      } catch (error) {
+        console.warn('Zoom SDK not found, using mock implementation for development');
+        ZoomVideo = this.getMockZoomSDK();
+      }
       
-      // For demo purposes, we'll simulate the initialization
-      // Real initialization code:
-      /*
       this.client = ZoomVideo.createClient();
       
       await this.client.init({
-        dependentAssets: config.webEndpoint,
+        dependentAssets: `https://source.zoom.us/${config.webEndpoint}/videosdk/`,
         enforceGalleryView: config.enforceGalleryView,
         disableCORP: config.disableCORP,
         audioPanelAlwaysOpen: config.audioPanelAlwaysOpen,
@@ -54,10 +66,6 @@ export class ZoomService {
       });
 
       this.stream = this.client.getMediaStream();
-      */
-
-      // Demo simulation
-      await new Promise(resolve => setTimeout(resolve, 1500));
       this.isInitialized = true;
       
       console.log('Zoom SDK initialized successfully');
@@ -77,8 +85,6 @@ export class ZoomService {
     try {
       console.log('Joining meeting:', meetingConfig.topic);
 
-      // Real join code:
-      /*
       await this.client.join({
         topic: meetingConfig.topic,
         userName: meetingConfig.userName,
@@ -88,30 +94,16 @@ export class ZoomService {
         meetingNumber: meetingConfig.meetingNumber,
         role: meetingConfig.role || 0
       });
-      */
 
-      // Demo simulation
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Simulate participants
-      this.participants = [
-        {
-          userId: '1',
-          userName: meetingConfig.userName,
-          isHost: meetingConfig.role === 1,
-          isVideoOn: true,
-          isAudioOn: true,
-          isHandRaised: false
-        },
-        {
-          userId: '2',
-          userName: 'Demo Participant',
-          isHost: false,
-          isVideoOn: true,
-          isAudioOn: true,
-          isHandRaised: false
-        }
-      ];
+      // Get initial participants
+      this.participants = this.client.getAllUser().map((user: any) => ({
+        userId: user.userId.toString(),
+        userName: user.displayName,
+        isHost: user.isHost,
+        isVideoOn: user.bVideoOn,
+        isAudioOn: user.bAudioOn,
+        isHandRaised: user.bHandRaised || false
+      }));
 
       console.log('Successfully joined meeting');
     } catch (error) {
@@ -126,30 +118,19 @@ export class ZoomService {
     }
 
     try {
-      // Real video start code:
-      /*
       await this.stream.startVideo();
       const videoTrack = this.stream.getVideoTrack();
       
       if (videoElement && videoTrack) {
         const mediaStream = new MediaStream([videoTrack]);
         videoElement.srcObject = mediaStream;
+        await videoElement.play();
+        console.log('Video started successfully');
         return mediaStream;
-      }
-      */
-
-      // Demo: Get user camera for simulation
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { width: 640, height: 480 },
-        audio: true
-      });
-
-      if (videoElement) {
-        videoElement.srcObject = stream;
       }
 
       console.log('Video started successfully');
-      return stream;
+      return null;
 
     } catch (error) {
       console.error('Failed to start video:', error);
@@ -159,9 +140,7 @@ export class ZoomService {
 
   async stopVideo(): Promise<void> {
     try {
-      // Real stop code:
-      // await this.stream.stopVideo();
-      
+      await this.stream.stopVideo();
       console.log('Video stopped');
     } catch (error) {
       console.error('Failed to stop video:', error);
@@ -170,9 +149,7 @@ export class ZoomService {
 
   async startAudio(): Promise<void> {
     try {
-      // Real audio start code:
-      // await this.stream.startAudio();
-      
+      await this.stream.startAudio();
       console.log('Audio started');
     } catch (error) {
       console.error('Failed to start audio:', error);
@@ -181,9 +158,7 @@ export class ZoomService {
 
   async stopAudio(): Promise<void> {
     try {
-      // Real stop code:
-      // await this.stream.stopAudio();
-      
+      await this.stream.stopAudio();
       console.log('Audio stopped');
     } catch (error) {
       console.error('Failed to stop audio:', error);
@@ -192,9 +167,7 @@ export class ZoomService {
 
   async leaveMeeting(): Promise<void> {
     try {
-      // Real leave code:
-      // await this.client.leave();
-      
+      await this.client.leave();
       this.participants = [];
       console.log('Left meeting successfully');
     } catch (error) {
@@ -212,21 +185,76 @@ export class ZoomService {
 
   // Event listeners for real implementation
   onParticipantJoin(callback: (participant: ZoomParticipant) => void): void {
-    // Real implementation:
-    // this.client.on('user-added', callback);
-    console.log('Participant join listener registered');
+    this.client.on('user-added', (payload: any) => {
+      const participant: ZoomParticipant = {
+        userId: payload.userId.toString(),
+        userName: payload.displayName,
+        isHost: payload.isHost,
+        isVideoOn: payload.bVideoOn,
+        isAudioOn: payload.bAudioOn,
+        isHandRaised: payload.bHandRaised || false
+      };
+      callback(participant);
+    });
   }
 
   onParticipantLeave(callback: (userId: string) => void): void {
-    // Real implementation:
-    // this.client.on('user-removed', callback);
-    console.log('Participant leave listener registered');
+    this.client.on('user-removed', (payload: any) => {
+      callback(payload.userId.toString());
+    });
   }
 
   onVideoStateChange(callback: (userId: string, isOn: boolean) => void): void {
-    // Real implementation:
-    // this.client.on('video-active-change', callback);
-    console.log('Video state change listener registered');
+    this.client.on('video-active-change', (payload: any) => {
+      callback(payload.userId.toString(), payload.action === 'Start');
+    });
+  }
+
+  // Mock Zoom SDK for development when real SDK is not available
+  private getMockZoomSDK() {
+    return {
+      createClient: () => ({
+        init: async () => {
+          await new Promise(resolve => setTimeout(resolve, 1500));
+          console.log('Mock Zoom SDK initialized');
+        },
+        join: async (config: any) => {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          console.log('Mock: Joined meeting', config.topic);
+        },
+        leave: async () => {
+          console.log('Mock: Left meeting');
+        },
+        getMediaStream: () => ({
+          startVideo: async () => {
+            console.log('Mock: Started video');
+          },
+          stopVideo: async () => {
+            console.log('Mock: Stopped video');
+          },
+          startAudio: async () => {
+            console.log('Mock: Started audio');
+          },
+          stopAudio: async () => {
+            console.log('Mock: Stopped audio');
+          },
+          getVideoTrack: () => null
+        }),
+        getAllUser: () => [
+          {
+            userId: 1,
+            displayName: 'Mock User',
+            isHost: true,
+            bVideoOn: true,
+            bAudioOn: true,
+            bHandRaised: false
+          }
+        ],
+        on: (event: string, callback: Function) => {
+          console.log(`Mock: Registered listener for ${event}`);
+        }
+      })
+    };
   }
 }
 
